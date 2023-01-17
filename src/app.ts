@@ -1,7 +1,10 @@
-const dotenv = require("dotenv");
-
-const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : ".env";
-dotenv.config({ path: envFile });
+if (process.env.NODE_ENV !== "production") {
+  const dotenv = require("dotenv");
+  const envFile = process.env.NODE_ENV
+    ? `.env.${process.env.NODE_ENV}`
+    : ".env";
+  dotenv.config({ path: envFile });
+}
 
 import connect from "./utils/connect";
 import logger from "./utils/logger";
