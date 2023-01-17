@@ -1,7 +1,7 @@
 {
-  "name": "cv-api",
+  "name": "todo-api-v2",
   "version": "1.0.0",
-  "description": "CV API",
+  "description": "Todo List API",
   "main": "index.js",
   "scripts": {
     "test": "jest --detectOpenHandles",
