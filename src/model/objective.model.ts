@@ -21,7 +21,7 @@ const objectiveSchema = new mongoose.Schema(
     targetDate: { type: Date, required: true },
     completedDate: { type: Date },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 const ObjectiveModel = mongoose.model<ObjectiveDocument>(

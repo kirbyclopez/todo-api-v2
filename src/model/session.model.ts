@@ -18,7 +18,7 @@ const sessionSchema = new mongoose.Schema(
     valid: { type: Boolean, default: true },
     userAgent: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 const SessionModel = mongoose.model<SessionDocument>("Session", sessionSchema);
