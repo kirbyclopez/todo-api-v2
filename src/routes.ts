@@ -5,7 +5,7 @@ import { userRouter } from "./router/user.router";
 
 const routes = (app: Express) => {
   app.get("/", (req: Request, res: Response) => {
-    res.send({ msg: "CV API v1.0.0" });
+    res.send({ msg: "Todo API v1.0.0" });
   });
 
   app.use("/api/objectives", objectiveRouter);
