@@ -71,10 +71,15 @@ Fields:
 
 1. user (object)
 2. name
-3. items
-   1. name
-   2. isComplete
-   3. createdAt
-   4. updatedAt
+3. createdAt
+4. updatedAt
+
+Collection: **items**
+
+Fields:
+
+1. list (object)
+2. name
+3. isComplete
 4. createdAt
 5. updatedAt
