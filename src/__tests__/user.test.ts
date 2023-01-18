@@ -39,8 +39,8 @@ describe("User resource test suite", () => {
           .send(userPayload);
 
         expect(result.statusCode).toBe(201);
-        expect(result.body.username).toBe("user1");
-        expect(result.body.name).toBe("New User 1");
+        expect(result.body.accessToken).toBeTruthy();
+        expect(result.body.refreshToken).toBeTruthy();
       });
     });
   });

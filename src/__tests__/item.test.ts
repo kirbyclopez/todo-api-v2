@@ -3,8 +3,10 @@ require("dotenv").config({ path: ".env.test" });
 import request from "supertest";
 import createServer from "../utils/server";
 import mongoose from "mongoose";
-import { clearObjectives } from "../service/objective.service";
+import { clearItems } from "../service/item.service";
 import { clearUsers } from "../service/user.service";
+import { clearLists } from "../service/list.service";
+import { clearSessions } from "../service/session.service";
 
 const app = createServer();
 
@@ -17,24 +19,26 @@ const userPayload = {
   passwordConfirmation: "Password1",
 };
 
-const objectiveId = new mongoose.Types.ObjectId().toString();
-const dummyObjectiveId = "6396da7d01dd1102052c6f51";
+const listId = new mongoose.Types.ObjectId().toString();
+const itemId = new mongoose.Types.ObjectId().toString();
+const dummyItemId = "6396da7d01dd1102052c6f51";
 
-const objectivePayload = {
-  _id: objectiveId,
-  name: "Objective 1",
-  description: "This is the description of Objective 1",
-  reason: "For improvement",
-  targetDate: new Date("2022-12-01"),
-  completedDate: new Date("2022-12-31"),
+const listPayload = {
+  _id: listId,
+  name: "List 1",
 };
 
-const updateObjectivePayload = {
-  name: "Objective 2",
-  description: "This is the description of Objective 2",
-  reason: "For improvement 2",
-  targetDate: new Date("2023-01-01"),
-  completedDate: new Date("2023-01-31"),
+const itemPayload = {
+  _id: itemId,
+  listId: listId,
+  name: "Item 1",
+  isComplete: false,
+};
+
+const updateItemPayload = {
+  listId: listId,
+  name: "Item 2",
+  isComplete: true,
 };
 
 beforeAll(async () => {
@@ -52,13 +56,28 @@ beforeAll(async () => {
 
   authCookie = response.headers["set-cookie"];
 
-  // Clear objectives collection
-  await clearObjectives();
+  // Clear items collection
+  await clearItems();
+
+  // Clear lists collection
+  await clearLists();
+
+  // Create a list
+  await request(app)
+    .post("/api/lists")
+    .set("Cookie", authCookie)
+    .send(listPayload);
 });
 
 afterAll(async () => {
-  // Clear objectives
-  await clearObjectives();
+  // Clear items
+  await clearItems();
+
+  // Clear lists collection
+  await clearLists();
+
+  // Clear sessions collection
+  await clearSessions();
 
   // Clear users
   await clearUsers();
@@ -67,175 +86,169 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-describe("Objective resource test suite", () => {
-  describe("POST /api/objectives tests", () => {
+describe("Item resource test suite", () => {
+  describe("POST /api/items tests", () => {
     describe("given the token is not provided", () => {
       it("should return a 403", async () => {
-        const result = await request(app)
-          .post("/api/objectives")
-          .send(objectivePayload);
+        const result = await request(app).post("/api/items").send(itemPayload);
 
         expect(result.statusCode).toBe(403);
       });
     });
-    describe("given the objective fields are complete", () => {
-      it("should return status 201 and create an objective", async () => {
+    describe("given the item fields are complete", () => {
+      it("should return status 201 and create an item", async () => {
         const result = await request(app)
-          .post("/api/objectives")
+          .post("/api/items")
           .set("Cookie", authCookie)
-          .send(objectivePayload);
+          .send(itemPayload);
 
         expect(result.statusCode).toBe(201);
-        expect(result.body.name).toBe("Objective 1");
+        expect(result.body.name).toBe("Item 1");
       });
     });
   });
 
-  describe("GET /api/objectives tests", () => {
+  describe("GET /api/lists/:listId/items tests", () => {
     describe("given the token is not provided", () => {
       it("should return a 403", async () => {
-        const result = await request(app).get("/api/objectives");
+        const result = await request(app).get(`/api/lists/${listId}/items`);
 
         expect(result.statusCode).toBe(403);
       });
     });
     describe("given the token is provided", () => {
-      it("should return status 200 and all objectives", async () => {
+      it("should return status 200 and all items of the list", async () => {
         const result = await request(app)
-          .get("/api/objectives")
+          .get(`/api/lists/${listId}/items`)
           .set("Cookie", authCookie);
 
         expect(result.statusCode).toBe(200);
         expect(result.body.length).toBeGreaterThan(0);
-        expect(result.body[0].name).toBe("Objective 1");
+        expect(result.body[0].name).toBe("Item 1");
       });
     });
   });
 
-  describe("GET /api/objectives/:objectiveId tests", () => {
+  describe("GET /api/items/:itemId tests", () => {
     describe("given the token is not provided", () => {
       it("should return a 403", async () => {
-        const result = await request(app).get(`/api/objectives/${objectiveId}`);
+        const result = await request(app).get(`/api/items/${itemId}`);
 
         expect(result.statusCode).toBe(403);
       });
     });
-    describe("given the objectiveId does not exist", () => {
+    describe("given the itemId does not exist", () => {
       it("should return a 404", async () => {
         const result = await request(app)
-          .get(`/api/objectives/${dummyObjectiveId}`)
+          .get(`/api/items/${dummyItemId}`)
           .set("Cookie", authCookie);
 
         expect(result.statusCode).toBe(404);
         expect(result.body.message).toBe("Resource not found");
       });
     });
-    describe("given the objectiveId exists", () => {
-      it("should return status 200 and an objective", async () => {
+    describe("given the itemId exists", () => {
+      it("should return status 200 and an item", async () => {
         const result = await request(app)
-          .get(`/api/objectives/${objectiveId}`)
+          .get(`/api/items/${itemId}`)
           .set("Cookie", authCookie);
 
         expect(result.statusCode).toBe(200);
-        expect(result.body.name).toBe("Objective 1");
+        expect(result.body.name).toBe("Item 1");
       });
     });
   });
 
-  describe("PUT /api/objectives/:objectiveId tests", () => {
+  describe("PUT /api/items/:itemId tests", () => {
     describe("given the token is not provided", () => {
       it("should return a 403", async () => {
-        const result = await request(app).put(`/api/objectives/${objectiveId}`);
+        const result = await request(app).put(`/api/items/${itemId}`);
 
         expect(result.statusCode).toBe(403);
       });
     });
-    describe("given the objectiveId does not exist", () => {
+    describe("given the itemId does not exist", () => {
       it("should return a 404", async () => {
         const result = await request(app)
-          .put(`/api/objectives/${dummyObjectiveId}`)
+          .put(`/api/items/${dummyItemId}`)
           .set("Cookie", authCookie)
-          .send(updateObjectivePayload);
+          .send(updateItemPayload);
 
         expect(result.statusCode).toBe(404);
         expect(result.body.message).toBe("Resource not found");
       });
     });
-    describe("given the objectiveId exists and fields are complete", () => {
-      it("should return status 200 and an objective", async () => {
+    describe("given the itemId exists and fields are complete", () => {
+      it("should return status 200 and an item", async () => {
         const result = await request(app)
-          .put(`/api/objectives/${objectiveId}`)
+          .put(`/api/items/${itemId}`)
           .set("Cookie", authCookie)
-          .send(updateObjectivePayload);
+          .send(updateItemPayload);
 
         expect(result.statusCode).toBe(200);
-        expect(result.body.name).toBe("Objective 2");
+        expect(result.body.name).toBe("Item 2");
       });
     });
   });
 
-  describe("PATCH /api/objectives/:objectiveId tests", () => {
+  describe("PATCH /api/items/:itemId tests", () => {
     describe("given the token is not provided", () => {
       it("should return a 403", async () => {
-        const result = await request(app).patch(
-          `/api/objectives/${objectiveId}`
-        );
+        const result = await request(app).patch(`/api/items/${itemId}`);
 
         expect(result.statusCode).toBe(403);
       });
     });
-    describe("given the objectiveId does not exist", () => {
+    describe("given the itemId does not exist", () => {
       it("should return a 404", async () => {
         const result = await request(app)
-          .patch(`/api/objectives/${dummyObjectiveId}`)
+          .patch(`/api/items/${dummyItemId}`)
           .set("Cookie", authCookie)
-          .send(updateObjectivePayload);
+          .send(updateItemPayload);
 
         expect(result.statusCode).toBe(404);
         expect(result.body.message).toBe("Resource not found");
       });
     });
-    describe("given the objectiveId exists and fields are complete", () => {
-      it("should return status 200 and an objective", async () => {
+    describe("given the itemId exists and fields are complete", () => {
+      it("should return status 200 and an item", async () => {
         const result = await request(app)
-          .patch(`/api/objectives/${objectiveId}`)
+          .patch(`/api/items/${itemId}`)
           .set("Cookie", authCookie)
-          .send(updateObjectivePayload);
+          .send(updateItemPayload);
 
         expect(result.statusCode).toBe(200);
-        expect(result.body.name).toBe("Objective 2");
+        expect(result.body.name).toBe("Item 2");
       });
     });
   });
 
-  describe("DELETE /api/objectives/:objectiveId tests", () => {
+  describe("DELETE /api/items/:itemId tests", () => {
     describe("given the token is not provided", () => {
       it("should return a 403", async () => {
-        const result = await request(app).delete(
-          `/api/objectives/${objectiveId}`
-        );
+        const result = await request(app).delete(`/api/items/${itemId}`);
 
         expect(result.statusCode).toBe(403);
       });
     });
-    describe("given the objectiveId does not exist", () => {
+    describe("given the itemId does not exist", () => {
       it("should return a 404", async () => {
         const result = await request(app)
-          .delete(`/api/objectives/${dummyObjectiveId}`)
+          .delete(`/api/items/${dummyItemId}`)
           .set("Cookie", authCookie);
 
         expect(result.statusCode).toBe(404);
         expect(result.body.message).toBe("Resource not found");
       });
     });
-    describe("given the objectiveId exists", () => {
+    describe("given the itemId exists", () => {
       it("should return status 200 and correct message", async () => {
         const result = await request(app)
-          .delete(`/api/objectives/${objectiveId}`)
+          .delete(`/api/items/${itemId}`)
           .set("Cookie", authCookie);
 
         expect(result.statusCode).toBe(200);
-        expect(result.body.message).toBe("Objective was successfully deleted.");
+        expect(result.body.message).toBe("Item was successfully deleted.");
       });
     });
   });

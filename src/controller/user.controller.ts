@@ -49,7 +49,7 @@ export const createUserHandler = async (
       path: "/",
     });
 
-    return res.send({ accessToken, refreshToken });
+    return res.status(201).send({ accessToken, refreshToken });
   } catch (e: any) {
     logger.error(e);
     return res.status(409).send({ message: e.message });
