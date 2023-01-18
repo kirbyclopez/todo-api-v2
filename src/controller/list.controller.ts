@@ -58,6 +58,8 @@ export const updateListHandler = async (
   const listId = req.params.listId;
   const update = req.body;
 
+  update.userId = userId;
+
   const list = await findList({ _id: listId, userId });
 
   if (!list) return res.status(404).send({ message: "Resource not found" });
