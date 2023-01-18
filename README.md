@@ -4,13 +4,63 @@ This app is the backend application of a web based Todo List app.
 
 <br>
 
-## Running the application
+## Live Preview
+
+You can try this application at [http://todo-api-v2.klcodes.com](http://todo-api-v2.klcodes.com)
+
+<br>
+
+## Available Scripts
+
+In the project directory, you can run:
 
 ```bash
 npm run dev
 ```
 
+Runs the app in the development mode.\
 Open [http://localhost:5000](http://localhost:5000) with your browser to check if the API is running.
+
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
+
+<br>
+
+```bash
+npm run test
+```
+
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+<br>
+
+```bash
+npm run build
+```
+
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
+
+<br>
+
+```bash
+npm start
+```
+
+Runs the app using the production build.\
+Open [http://localhost:5000](http://localhost:5000) with your browser to check if the API is running.
+
+<br>
+
+```bash
+npm run deploy
+```
+
+Runs the build and start command in succession. This command is used when deploying the app to your server.
 
 <br>
 
