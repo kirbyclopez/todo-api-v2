@@ -1,4 +1,4 @@
-# Todo List API v2
+# Todo List API
 
 This app is the backend application of a web based Todo List app.
 
@@ -6,7 +6,7 @@ This app is the backend application of a web based Todo List app.
 
 ## Live Preview
 
-You can try this application at [http://todo-api-v2.klcodes.com](http://todo-api-v2.klcodes.com)
+You can try this application at [http://todo-api.klcodes.com](http://todo-api.klcodes.com)
 
 <br>
 

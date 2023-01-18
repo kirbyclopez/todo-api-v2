@@ -1,5 +1,5 @@
 {
-  "name": "todo-api-v2",
+  "name": "todo-api",
   "version": "1.0.0",
   "description": "Todo List API",
   "main": "index.js",
