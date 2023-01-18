@@ -64,6 +64,28 @@ Runs the build and start command in succession. This command is used when deploy
 
 <br>
 
+## Deploying app to AWS Elastic Beanstalk
+
+1. Create a repository with the **eb init** command.
+
+```bash
+eb init --platform node.js --region us-east-2
+```
+
+2. Create an environment running a sample application with the **eb create** command.
+
+```bash
+eb create --sample [app-env-name]
+```
+
+3. To deploy the changes in your app, use the command:
+
+```bash
+eb deploy
+```
+
+<br>
+
 ## Features
 
 1. User Registration
