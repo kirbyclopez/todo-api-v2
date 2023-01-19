@@ -4,6 +4,7 @@ export interface ICookieConfig {
   sameSite?: boolean | "strict" | "lax" | "none";
   maxAge?: number;
   path?: string;
+  domain?: string;
 }
 
 const cookieConfig: ICookieConfig = {
@@ -12,6 +13,7 @@ const cookieConfig: ICookieConfig = {
   sameSite: process.env.NODE_ENV === "production" ? "strict" : false,
   maxAge: 60 * 60 * 24 * 30,
   path: "/",
+  domain: process.env.NODE_ENV === "production" ? ".klcodes.com" : "localhost",
 };
 
 export default cookieConfig;
