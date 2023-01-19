@@ -7,7 +7,7 @@ export interface ICookieConfig {
 }
 
 const cookieConfig: ICookieConfig = {
-  httpOnly: true,
+  httpOnly: false,
   maxAge: 60 * 60 * 24 * 30,
 };
 
