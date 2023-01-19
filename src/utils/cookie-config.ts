@@ -8,7 +8,7 @@ export interface ICookieConfig {
 
 const cookieConfig: ICookieConfig = {
   httpOnly: true,
-  secure: process.env.COOKIE_SECURE === "true",
+  secure: process.env.NODE_ENV === "production",
   sameSite: process.env.NODE_ENV === "production" ? "none" : false,
   maxAge: 60 * 60 * 24 * 30,
   path: "/",
