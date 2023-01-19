@@ -6,6 +6,7 @@ import {
 } from "../service/session.service";
 import { validatePassword } from "../service/user.service";
 import { signJwt } from "../utils/jwt.utils";
+import cookieConfig from "../utils/cookie-config";
 
 export const createUserSessionHandler = async (req: Request, res: Response) => {
   const user = await validatePassword(req.body);
@@ -35,20 +36,8 @@ export const createUserSessionHandler = async (req: Request, res: Response) => {
     { expiresIn: process.env.REFRESHTOKENTTL }
   );
 
-  res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 60 * 60 * 24 * 30,
-    path: "/",
-  });
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 60 * 60 * 24 * 30,
-    path: "/",
-  });
+  res.cookie("accessToken", accessToken, cookieConfig);
+  res.cookie("refreshToken", refreshToken, cookieConfig);
 
   return res.send({ accessToken, refreshToken });
 };
