@@ -7,8 +7,11 @@ export interface ICookieConfig {
 }
 
 const cookieConfig: ICookieConfig = {
-  httpOnly: false,
+  httpOnly: true,
+  secure: process.env.COOKIE_SECURE === "true",
+  sameSite: "none",
   maxAge: 60 * 60 * 24 * 30,
+  path: "/",
 };
 
 export default cookieConfig;
