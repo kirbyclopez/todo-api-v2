@@ -11,7 +11,12 @@ const createServer = () => {
   const app = express();
 
   app.use(helmet());
-  app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+  app.use(
+    cors({
+      credentials: true,
+      origin: ["http://localhost:3000", /\.klcodes\.com$/],
+    })
+  );
   app.use(express.json());
   app.use(cookieParser());
 
