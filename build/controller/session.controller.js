@@ -8,11 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteSessionHandler = exports.getUserSessionsHandler = exports.createUserSessionHandler = void 0;
 const session_service_1 = require("../service/session.service");
 const user_service_1 = require("../service/user.service");
 const jwt_utils_1 = require("../utils/jwt.utils");
+const cookie_config_1 = __importDefault(require("../utils/cookie-config"));
 const createUserSessionHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield (0, user_service_1.validatePassword)(req.body);
     if (!user)
@@ -30,20 +34,8 @@ const createUserSessionHandler = (req, res) => __awaiter(void 0, void 0, void 0,
         username: user.username,
         sid: session._id,
     }, { expiresIn: process.env.REFRESHTOKENTTL });
-    res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 60 * 60 * 24 * 30,
-        path: "/",
-    });
-    res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 60 * 60 * 24 * 30,
-        path: "/",
-    });
+    res.cookie("accessToken", accessToken, cookie_config_1.default);
+    res.cookie("refreshToken", refreshToken, cookie_config_1.default);
     return res.send({ accessToken, refreshToken });
 });
 exports.createUserSessionHandler = createUserSessionHandler;

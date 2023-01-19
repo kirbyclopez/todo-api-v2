@@ -17,6 +17,7 @@ const user_service_1 = require("../service/user.service");
 const logger_1 = __importDefault(require("../utils/logger"));
 const session_service_1 = require("../service/session.service");
 const jwt_utils_1 = require("../utils/jwt.utils");
+const cookie_config_1 = __importDefault(require("../utils/cookie-config"));
 const createUserHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield (0, user_service_1.createUser)(req.body);
@@ -33,20 +34,8 @@ const createUserHandler = (req, res) => __awaiter(void 0, void 0, void 0, functi
             username: user.username,
             sid: session._id,
         }, { expiresIn: process.env.REFRESHTOKENTTL });
-        res.cookie("accessToken", accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 60 * 60 * 24 * 30,
-            path: "/",
-        });
-        res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 60 * 60 * 24 * 30,
-            path: "/",
-        });
+        res.cookie("accessToken", accessToken, cookie_config_1.default);
+        res.cookie("refreshToken", refreshToken, cookie_config_1.default);
         return res.status(201).send({ accessToken, refreshToken });
     }
     catch (e) {
