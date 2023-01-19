@@ -16,4 +16,11 @@ const cookieConfig: ICookieConfig = {
   domain: process.env.NODE_ENV === "production" ? ".klcodes.com" : "localhost",
 };
 
+export const delCookieConfig: ICookieConfig = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "strict" : false,
+  domain: process.env.NODE_ENV === "production" ? ".klcodes.com" : "localhost",
+};
+
 export default cookieConfig;

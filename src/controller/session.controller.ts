@@ -6,7 +6,7 @@ import {
 } from "../service/session.service";
 import { validatePassword } from "../service/user.service";
 import { signJwt } from "../utils/jwt.utils";
-import cookieConfig from "../utils/cookie-config";
+import cookieConfig, { delCookieConfig } from "../utils/cookie-config";
 
 export const createUserSessionHandler = async (req: Request, res: Response) => {
   const user = await validatePassword(req.body);
@@ -55,7 +55,9 @@ export const deleteSessionHandler = async (req: Request, res: Response) => {
 
   await updateSession({ _id: sessionId }, { valid: false });
 
-  res.clearCookie("accessToken").clearCookie("refreshToken");
+  res
+    .clearCookie("accessToken", delCookieConfig)
+    .clearCookie("refreshToken", delCookieConfig);
 
   return res.send({
     accessToken: null,
