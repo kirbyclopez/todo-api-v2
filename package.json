@@ -9,7 +9,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
     "build": "npx tsc",
     "start": "node build/app.js",
-    "deploy": "npm run build && npm run start"
+    "deploy": "npm run build && npm start"
   },
   "author": "Kirby Lopez",
   "license": "ISC",
