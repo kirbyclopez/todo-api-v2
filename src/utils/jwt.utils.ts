@@ -6,7 +6,7 @@ export const signJwt = (
   object: Object,
   options?: jwt.SignOptions | undefined
 ) => {
-  return jwt.sign(object, secret);
+  return jwt.sign(object, secret, options);
 };
 
 export const verifyJwt = (token: string) => {
