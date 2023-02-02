@@ -15,11 +15,6 @@ export const deserializeUser = async (
 
   const { decoded, expired } = verifyJwt(accessToken);
 
-  if (decoded) {
-    res.locals.user = decoded;
-    return next();
-  }
-
   if (expired && refreshToken) {
     const newAccessToken = await reIssueAccessToken({ refreshToken });
 
@@ -31,6 +26,11 @@ export const deserializeUser = async (
       res.locals.user = result.decoded;
       return next();
     }
+  }
+
+  if (decoded) {
+    res.locals.user = decoded;
+    return next();
   }
 
   return next();
